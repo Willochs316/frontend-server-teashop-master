@@ -82,13 +82,21 @@ productRoute.post(
 );
 
 productRoute.post('/products', async (req, res) => {
-  console.log(req.body, 'my product was consoled');
+  try {
+    const newProduct = new Product({
+      ...req.body,
+    });
+    await newProduct.save();
 
-  const newProduct = new Product({
-    ...req.body,
-  });
-  await newProduct.save();
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.log('error:' + error.message);
 
-  res.status(201).json(newProduct);
+    res.status(400).json({
+      message: error.message,
+    });
+    return;
+  }
 });
+
 export default productRoute;
